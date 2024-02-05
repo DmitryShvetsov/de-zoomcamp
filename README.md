@@ -1,2 +1,0 @@
-# de-zoomcamp
-Week2:
