@@ -1,5 +1,4 @@
-# de-zoomcamp
-Week2:
+# Data loader.
 import io
 import pandas as pd
 import requests
