@@ -62,3 +62,71 @@ def test_output(output, *args) -> None:
     Template code for testing the output of the block.
     """
     assert output is not None, 'The output is undefined'
+
+
+# Transformer
+import datetime
+
+
+if 'transformer' not in globals():
+    from mage_ai.data_preparation.decorators import transformer
+if 'test' not in globals():
+    from mage_ai.data_preparation.decorators import test
+
+
+@transformer
+def transform(data, *args, **kwargs):
+    #print(f'Preprocessing: rows with zero passengers: {data["passenger_count"].isin([0]).sum()}')
+    data = data[data['passenger_count'] > 0]
+    data = data[data['trip_distance'] > 0]
+
+    #data["lpep_pickup_date"] = data["lpep_pickup_datetime"].map(
+    #    lambda x: str(datetime.datetime.strptime(x, "%Y-%m-%d"))
+    #    if x == x and x is not None
+    #    else x
+    #)
+
+    return data
+
+@test
+def test_output(output, *args):
+    assert output["passenger_count"].isin([0]).sum() == 0, 'There are rides with zero passengers'
+
+
+
+ # Python exporter
+from mage_ai.settings.repo import get_repo_path
+from mage_ai.io.config import ConfigFileLoader
+from mage_ai.io.postgres import Postgres
+from pandas import DataFrame
+from os import path
+
+if 'data_exporter' not in globals():
+    from mage_ai.data_preparation.decorators import data_exporter
+
+
+@data_exporter
+def export_data_to_postgres(df: DataFrame, **kwargs) -> None:
+    """
+    Template for exporting data to a PostgreSQL database.
+    Specify your configuration settings in 'io_config.yaml'.
+
+    Docs: https://docs.mage.ai/design/data-loading#postgresql
+    """
+    schema_name = 'mage'  # Specify the name of the schema to export data to
+    table_name = 'green_taxi'  # Specify the name of the table to export data to
+    config_path = path.join(get_repo_path(), 'io_config.yaml')
+    config_profile = 'dev'
+
+    with Postgres.with_config(ConfigFileLoader(config_path, config_profile)) as loader:
+        loader.export(
+            df,
+            schema_name,
+            table_name,
+            index=False,  # Specifies whether to include index in exported table
+            if_exists='replace',  # Specify resolution policy if table name already exists
+        )
+
+
+# SQL exporter
+select distinct vendorid from mage.green_taxi
