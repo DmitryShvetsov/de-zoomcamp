@@ -80,11 +80,7 @@ def transform(data, *args, **kwargs):
     data = data[data['passenger_count'] > 0]
     data = data[data['trip_distance'] > 0]
 
-    #data["lpep_pickup_date"] = data["lpep_pickup_datetime"].map(
-    #    lambda x: str(datetime.datetime.strptime(x, "%Y-%m-%d"))
-    #    if x == x and x is not None
-    #    else x
-    #)
+    data['lpep_pickup_date'] = data['lpep_pickup_datetime'].dt.date
 
     return data
 
