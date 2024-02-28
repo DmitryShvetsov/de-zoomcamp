@@ -4,3 +4,9 @@ df = spark.read \
     .option("header", "true") \
     .csv('fhv_tripdata_2019-10.csv')
 df.show()
+
+!head fhv_tripdata_2019-10.csv > head.csv
+import pandas as pd
+df_pandas = pd.read_csv("head.csv")
+df_pandas.dtypes
+
