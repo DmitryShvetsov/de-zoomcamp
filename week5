@@ -1,0 +1,6 @@
+!wget https://github.com/DataTalksClub/nyc-tlc-data/releases/download/fhv/fhv_tripdata_2019-10.csv.gz
+!gzip -d fhv_tripdata_2019-10.csv.gz
+df = spark.read \
+    .option("header", "true") \
+    .csv('fhv_tripdata_2019-10.csv')
+df.show()
