@@ -10,3 +10,5 @@ import pandas as pd
 df_pandas = pd.read_csv("head.csv")
 df_pandas.dtypes
 
+df.repartition(6)
+df.write.parquet('fhvhv/2019/10')
