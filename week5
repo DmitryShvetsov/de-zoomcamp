@@ -12,3 +12,8 @@ df_pandas.dtypes
 
 df.repartition(6)
 df.write.parquet('fhvhv/2019/10')
+
+df.registerTempTable('trips_data')
+
+spark.sql(
+"""select * from trips_data limit 10""").show()
